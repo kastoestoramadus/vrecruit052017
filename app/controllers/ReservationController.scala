@@ -11,7 +11,7 @@ import scala.util.Try
 class ReservationController @Inject()() extends Controller {
   val imdbApi = new ImdbApi() // wrong place for the configuration
 
-  val reservationService = new ReservationService(el => imdbApi.getFullDetails(el).getTitle)
+  val reservationService = new ReservationService()
 
   def registerTheMovie = Action { implicit request =>
     println(request.body)
@@ -21,7 +21,9 @@ class ReservationController @Inject()() extends Controller {
     val seatsNumber: SeatsQuantity = (json \ "availableSeats").as[Int]
     val screenId: ScreenId = (json \ "screenId").as[String]
 
-    handle( reservationService.registerTheMovie(imdbId, seatsNumber, screenId))
+    val movieTitle = imdbApi.getFullDetails(imdbId).getTitle
+
+    handle( reservationService.registerTheMovie(imdbId, movieTitle, seatsNumber, screenId))
   }
 
   def reserveASeat = Action { implicit request =>

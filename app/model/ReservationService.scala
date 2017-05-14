@@ -2,13 +2,13 @@ package model
 
 import scala.util.{Failure, Success, Try}
 
-class ReservationService ( titleGetter: ImdbId => String) {
+class ReservationService() {
 
   private var movies = Set[MovieProjection]()
   private var freeSeats = Map[ProjectionId, SeatsQuantity]()
 
-  def registerTheMovie(imdbId: ImdbId, availableSeats: SeatsQuantity, screenId: ScreenId): Try[MovieProjection] = {
-    val newEl = MovieProjection(imdbId: ImdbId, availableSeats: SeatsQuantity, screenId: ScreenId)
+  def registerTheMovie(imdbId: ImdbId, movieTitle: String, availableSeats: SeatsQuantity, screenId: ScreenId): Try[MovieProjection] = {
+    val newEl = MovieProjection(imdbId: ImdbId, movieTitle, availableSeats: SeatsQuantity, screenId: ScreenId)
     if(freeSeats.contains(newEl.projectionId))
       Failure(MovieAlreadyRegistered)
     else {
@@ -36,7 +36,7 @@ class ReservationService ( titleGetter: ImdbId => String) {
       .map{ movie =>
         import movie.availableSeats
         Success(
-          StateOfProjection(imdbId, screenId, titleGetter(imdbId),
+          StateOfProjection(imdbId, screenId, movie.movieTitle,
             availableSeats, availableSeats - freeSeats(movie.projectionId))
         )
       }.getOrElse(Failure(NoSuchMovieProjection))
@@ -50,7 +50,7 @@ case object NoSeatsLeft extends RuntimeException
 case object NoSuchMovieProjection extends RuntimeException
 
 // may have separate id and the date
-case class MovieProjection(imdbId: ImdbId, availableSeats: SeatsQuantity, screenId: ScreenId) {
+case class MovieProjection(imdbId: ImdbId, movieTitle: String, availableSeats: SeatsQuantity, screenId: ScreenId) {
   def projectionId: ProjectionId = imdbId + screenId
 }
 case object MovieAlreadyRegistered extends RuntimeException
