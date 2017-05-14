@@ -7,8 +7,8 @@ class ReservationService ( titleGetter: ImdbId => String) {
   private var movies = Set[MovieProjection]()
   private var freeSeats = Map[ProjectionId, SeatsQuantity]()
 
-  def registerTheMovie(imdbId: ImdbId, seatsNumber: SeatsQuantity, screenId: ScreenId): Try[MovieProjection] = {
-    val newEl = MovieProjection(imdbId: ImdbId, seatsNumber: SeatsQuantity, screenId: ScreenId)
+  def registerTheMovie(imdbId: ImdbId, availableSeats: SeatsQuantity, screenId: ScreenId): Try[MovieProjection] = {
+    val newEl = MovieProjection(imdbId: ImdbId, availableSeats: SeatsQuantity, screenId: ScreenId)
     if(freeSeats.contains(newEl.projectionId))
       Failure(MovieAlreadyRegistered)
     else {

@@ -13,12 +13,4 @@ import play.filters.hosts.AllowedHostsFilter
  * https://www.playframework.com/documentation/latest/AllowedHostsFilter
  * https://www.playframework.com/documentation/latest/SecurityHeaders
  */
-class Filters @Inject() (
-  csrfFilter: CSRFFilter,
-  allowedHostsFilter: AllowedHostsFilter,
-  securityHeadersFilter: SecurityHeadersFilter
-) extends DefaultHttpFilters(
-  csrfFilter, 
-  allowedHostsFilter, 
-  securityHeadersFilter
-)
+class Filters @Inject() () extends DefaultHttpFilters()
