@@ -2,14 +2,16 @@ package controllers
 
 import javax.inject.Inject
 
+import com.omertron.imdbapi.ImdbApi
 import model._
 import play.api.mvc.{Action, Controller}
 
 import scala.util.Try
-import play.api.libs.json.Json
 
 class ReservationController @Inject()() extends Controller {
-  val reservationService = new ReservationService(el => el + "Title")
+  val imdbApi = new ImdbApi() // wrong place for the configuration
+
+  val reservationService = new ReservationService(el => imdbApi.getFullDetails(el).getTitle)
 
   def registerTheMovie = Action { implicit request =>
     println(request.body)
